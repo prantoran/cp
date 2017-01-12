@@ -1,0 +1,12 @@
+This is not a README
+
+lalalalaaaalalalaallllol
+
+git commands:
+
+git init
+git status -s
+git add .
+git commit -m "lala"
+git push origin master
+
