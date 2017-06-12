@@ -173,6 +173,8 @@ counts the number of bits in n
 * Merging two sorted vectors from children into larger vector in parent:
     merge(v[lc].begin(),  v[lc].end(), v[rc].begin(), v[rc].end(), back_inserter(v[cur]));
 
+* Given a sorted array, finding the number of elements within range [lo,hi]
+    upper_bound(v[cur].begin(), v[cur].end(), hi) - lower_bound(v[cur].begin(), v[cur].end(), lo);
 
 
 */
