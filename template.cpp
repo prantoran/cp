@@ -159,7 +159,6 @@ int main()
         Check extreme values [0,1,n]
         Limit to 3 nested if statements
         Prune obvious conditions earlier, making the problem smaller
-        Take a cold shower, nap and wake up atleast an hour before contest
     */
 
 }
@@ -170,4 +169,10 @@ m.check(x); //returns iterator position to item x, returns m.end() if not found
 
 __builtin_popcountll(n)
 counts the number of bits in n
+
+* Merging two sorted vectors from children into larger vector in parent:
+    merge(v[lc].begin(),  v[lc].end(), v[rc].begin(), v[rc].end(), back_inserter(v[cur]));
+
+
+
 */
