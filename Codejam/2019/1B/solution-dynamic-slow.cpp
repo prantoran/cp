@@ -1,14 +1,16 @@
 #include <iostream>
 #include <cstdio>
 #include <vector>
+#include <cstring>
 
-#define MX 200005
+#define MX 100005
 #define LL long long
 
 using namespace std;
 
-vector<int> c, d;
+vector<int> c, d, lastseen;
 vector<vector<int> > rmqC, rmqD;
+
 
 int inv2[MX];
 
@@ -42,45 +44,28 @@ void setRMQ(int n, const vector<int>& arr, vector<vector<int> >& rmq) {
 
         base <<= 1;
     }
-
-    base = 0;
-    for (int i = 0; i < ln; i ++) {
-        for (int j = 0; j + 2*base -1 < n; j ++) {
-            cout << rmq[i][j] << " ";
-        } cout << endl;
-
-        if (!base) base = 1;
-        else base <<= 1;
-    }
 }
 
 int query(int l, int r, const vector<vector<int> > rmq) {
     int range = r-l+1;
     int ln = inv2[range];
     int base = 1 << ln;
-
-    cout << "query() range:" << range << " l:" << l << " r:" << r << " base:" << base << " ln:" << ln << " r-base+1:" << r-base+1 << " lft:" << rmq[ln][l] << " rgt:" << rmq[ln][r-base+1] << endl;
     return max(rmq[ln][l], rmq[ln][r-base+1]);
 }
 
 bool p1(int l, int r, int v) {
-    cout << "p1() l:" << l << " r:" << r << " v:" << v << " query():" << query(l, r, rmqC) << endl;
    if (query(l, r, rmqC) <= v) {
-       cout << "\ttrue\n";
-
        return true;
    }
-   cout << "\tfalse\n";
+
    return false; 
 }
 
 bool p2(int l, int r, int v, int k) {
-    cout << "p2() l:" << l << " r:" << r << " v:" << v << " k:" << k << endl;
     if (query(l, r, rmqD) <= v + k) {
-        cout << "\ttrue\n";
         return true;
     }
-    cout << "\tfalse\n";
+
     return false;
     
 }
@@ -92,17 +77,15 @@ bool p3(int l, int r, int v, int k) {
 
 
 
-LL binarySearchIntervals(int i, int lastpos, int v, int k, bool (*px)(int l, int r, int v, int k) ) {
+LL binarySearchIntervals(int i,int firstpos, int lastpos, int v, int k, bool (*px)(int l, int r, int v, int k) ) {
     LL ret = 0;
 
     int lft = i+1;
 
-    int lo = 0, hi = i;
-    cout << "lft side\n";
+    int lo = firstpos, hi = i;
 
     while(lo <= hi) {
         int mid = (lo + hi) / 2;
-        cout << "\tmid:" << mid << "\tlo:" << lo << "\thi:" << hi << endl;
 
         if (p1(mid, i, v) && (*px)(mid, i , v, k)) {
             hi = mid - 1;
@@ -115,11 +98,9 @@ LL binarySearchIntervals(int i, int lastpos, int v, int k, bool (*px)(int l, int
     int rgt = i-1;
 
     lo = i, hi = lastpos;
-    cout << "rgt side\n";
 
     while (lo <= hi) {
         int mid = (lo + hi) / 2;
-        cout << "\tmid:" << mid << "\tlo:" << lo << "\thi:" << hi << endl;
 
         if (p1(i, mid, v) && (*px)(i, mid, v, k)) {
             lo = mid + 1;
@@ -135,14 +116,12 @@ LL binarySearchIntervals(int i, int lastpos, int v, int k, bool (*px)(int l, int
 }
 
 LL intervalsCCanWin(int i, int mxlen, int v, int k) {
-    LL ret = binarySearchIntervals(i, mxlen, v, k, p2);
-    cout << "intervalsCCanWin() ret:" << ret << endl;
+    LL ret = binarySearchIntervals(i, lastseen[v]+1, mxlen, v, k, p2);
     return ret;
 }
 
 LL intervalsDWillLoose(int i, int mxlen, int v, int k) {
-    LL ret = binarySearchIntervals(i, mxlen, v, k, p3);
-    cout << "intervalsDWillLoose() ret:" << ret << endl;
+    LL ret = binarySearchIntervals(i, lastseen[v] + 1, mxlen, v, k, p3);
     return ret;
 }
 
@@ -169,15 +148,16 @@ int main() {
             scanf("%d", &d[i]);
         }
 
+        lastseen = vector<int>(MX, -1);
+
         setRMQ(n, d, rmqD);
         setRMQ(n, c, rmqC);
-
-        cout << query(1, max(1, n-3), rmqC) << endl;
 
         LL ans = 0;
         for (int i = 0 ; i < n; i ++) {
             LL cur = intervalsCCanWin(i, n-1, c[i], k) - intervalsDWillLoose(i, n-1, c[i], k);
             ans += cur;
+            lastseen[c[i]] = i;
         }
 
         printf("Case #%d: %lld\n", ca, ans);
