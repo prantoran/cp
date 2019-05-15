@@ -63,8 +63,14 @@ bool p1(int l, int r, int v) {
 }
 
 bool p2(int l, int r, int v, int k) {
-    if (query(l, r) <= v + k) return true;
+    cout << "p2() l:" << l << " r:" << r << " v:" << v << " k:" << k << endl;
+    if (query(l, r) <= v + k) {
+        cout << "\ttrue\n";
+        return true;
+    }
+    cout << "\tfalse\n";
     return false;
+    
 }
 
 bool p3(int l, int r, int v, int k) {
@@ -74,15 +80,18 @@ bool p3(int l, int r, int v, int k) {
 
 
 
-LL binarySearchIntervals(int i, int mxlen, int v, int k, bool (*px)(int l, int r, int v, int k) ) {
+LL binarySearchIntervals(int i, int lastpos, int v, int k, bool (*px)(int l, int r, int v, int k) ) {
     LL ret = 0;
 
-    int lft = i;
+    int lft = i+1;
 
     int lo = 0, hi = i;
+    cout << "lft side\n";
 
     while(lo <= hi) {
         int mid = (lo + hi) / 2;
+        cout << "\tmid:" << mid << "\tlo:" << lo << "\thi:" << hi << endl;
+
         if (p1(mid, i, v) && (*px)(mid, i , v, k)) {
             hi = mid - 1;
             lft = mid;
@@ -91,11 +100,15 @@ LL binarySearchIntervals(int i, int mxlen, int v, int k, bool (*px)(int l, int r
         }
     }
 
-    int rgt = i;
+    int rgt = i-1;
 
-    lo = i, hi = mxlen-1;
+    lo = i, hi = lastpos;
+    cout << "rgt side\n";
+
     while (lo <= hi) {
         int mid = (lo + hi) / 2;
+        cout << "\tmid:" << mid << "\tlo:" << lo << "\thi:" << hi << endl;
+
         if (p1(i, mid, v) && (*px)(i, mid, v, k)) {
             lo = mid + 1;
             rgt = mid;
@@ -110,11 +123,15 @@ LL binarySearchIntervals(int i, int mxlen, int v, int k, bool (*px)(int l, int r
 }
 
 LL intervalsCWillWin(int i, int mxlen, int v, int k) {
-    return binarySearchIntervals(i, mxlen, v, k, p2);
+    LL ret = binarySearchIntervals(i, mxlen, v, k, p2);
+    cout << "intervalsCWillWin() ret:" << ret << endl;
+    return ret;
 }
 
 LL intervalsDWillLoose(int i, int mxlen, int v, int k) {
-    return binarySearchIntervals(i, mxlen, v, k, p3);
+    LL ret = binarySearchIntervals(i, mxlen, v, k, p3);
+    cout << "intervalsDWillLoose() ret:" << ret << endl;
+    return ret;
 }
 
 int main() {
