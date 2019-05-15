@@ -10,8 +10,8 @@
 
 using namespace std;
 
-vector<int> c, d, lastseen;
-vector<vector<int> > rmqC, rmqD;
+int c[MX], d[MX], lastseen[MX];
+int rmqC[20][MX], rmqD[20][MX];
 
 
 int inv2[MX];
@@ -25,21 +25,15 @@ void setInv2() {
     }
 }
 
-void setRMQ(int n, const vector<int>& arr, vector<vector<int> >& rmq) {
+void setRMQ(int arr[], int n, int rmq[20][MX]) {
     int ln = inv2[n] + 1;
-
-    rmq = vector<vector<int> > (ln);
-
-    rmq[0] = vector<int> (n);
 
     for (int j = 0; j < n; j ++) {
         rmq[0][j] = arr[j];
     }
 
-
     int base = 1;
     for (int i = 1; i < ln; i ++) {
-        rmq[i] = vector<int> (n - 2*base + 1);
         for (int j = 0; j + 2*base -1 < n; j ++) {
             rmq[i][j] = max(rmq[i-1][j], rmq[i-1][j+base]);
         }
@@ -48,7 +42,7 @@ void setRMQ(int n, const vector<int>& arr, vector<vector<int> >& rmq) {
     }
 }
 
-int query(int l, int r, const vector<vector<int> > rmq) {
+int query(int l, int r, const int rmq[20][MX]) {
     int range = r-l+1;
     int ln = inv2[range];
     int base = 1 << ln;
@@ -139,9 +133,6 @@ int main() {
         int n, k;
         scanf("%d %d", &n, &k);
 
-        c = vector<int> (n);
-        d = vector<int> (n);
-
         for (int i = 0; i < n; i ++) {
             scanf("%d", &c[i]);
         }
@@ -149,11 +140,11 @@ int main() {
         for (int i = 0; i < n; i ++) {
             scanf("%d", &d[i]);
         }
+        
+        memset(lastseen, -1, sizeof lastseen);
 
-        lastseen = vector<int>(MX, -1);
-
-        setRMQ(n, d, rmqD);
-        setRMQ(n, c, rmqC);
+        setRMQ(d, n, rmqD);
+        setRMQ(c, n, rmqC);
 
         LL ans = 0;
         for (int i = 0 ; i < n; i ++) {
