@@ -6,14 +6,18 @@ using namespace std;
 class node {
     
     public:
-
+    node* parent;
     node* children[26];
+    int cnt;
     int used;
-    bool leaf;
+    int leaf;
+
     
     node() {
-        this->used = 0;
+        this->parent = nullptr;
+        this->cnt = 0;
         this->leaf = 0;
+        this->used = 0;
         memset(this->children, NULL, sizeof this->children);
     }
 
@@ -38,14 +42,15 @@ class trie {
             int id = s[i]-'A';
             if (cur->children[id] == nullptr) {
                 cur->children[id] = new node();
+                cur->children[id]->parent = cur;
             }
 
-            cur->used ++;
+            cur->cnt ++;
 
             cur = cur->children[id];
         }
         
-        cur->leaf = true;
+        cur->leaf ++;
     }
 
     int countPairs() {
@@ -56,6 +61,29 @@ class trie {
         int ans = 0;
 
         while(!st.empty()) {
+            node* cur = st.top();
+
+            if (cur->cnt < 2) {
+                continue;
+            }
+
+            bool fnd = false;
+
+            for (int i = 0 ; i < 26; i ++) {
+                node* child = cur->children[i];
+                
+                if (child == nullptr) continue;
+                if (child->cnt < 2) continue;
+                fnd = true;
+                st.push(child);
+
+            }
+
+            if (!fnd) {
+                ans += 2;
+                cur->cnt -= 2;
+                cur->parent->used += 2;
+            }
 
         }
     }
