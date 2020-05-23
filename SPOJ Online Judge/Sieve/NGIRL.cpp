@@ -42,7 +42,6 @@ int main() {
         lo = 0, hi = sid-1;
         while (lo <= hi) {
             int mid = (lo+hi)/2;
-            // printf("\sq[%d]:%lld\n", mid, sq[mid]);
             if (sq[mid] <= k) {
                 ans2 = mid+1;
                 lo = mid + 1;
