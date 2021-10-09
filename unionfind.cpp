@@ -40,4 +40,5 @@ public:
 private:
     vector<int> root;
     vector<int> rank;
+    int c;
 };
