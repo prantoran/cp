@@ -1,4 +1,6 @@
 
+// problem statement: https://codingcompetitions.withgoogle.com/kickstart/round/00000000008cb0f5/0000000000ba86e6#problem
+
 #include <bits/stdc++.h>
 #define SZ 12
 using namespace std;
