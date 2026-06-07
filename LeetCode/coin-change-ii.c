@@ -1,5 +1,7 @@
 // https://leetcode.com/problems/coin-change-ii
 
+// AUTHOR: Pinku Deb Nath
+
 #define ll unsigned long long
 
 int compareInts(const void * a, const void * b) {
